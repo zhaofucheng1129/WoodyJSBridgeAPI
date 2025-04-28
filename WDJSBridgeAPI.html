@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Woody JSBridge API 文档</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <!-- 添加遮罩层 -->
+    <div class="overlay" onclick="toggleNav()"></div>
+    
+    <h1>Woody JSBridge API 文档</h1>
+    <button class="nav-toggle" onclick="toggleNav()">☰</button>
+    
+    <div class="container">
+      <!-- 左侧导航 -->
+      <nav class="nav">
+        <div class="nav-title">API 分类</div>
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a href="#version" class="nav-link">版本支持</a>
+            <ul class="nav-list">
+              <li class="nav-item">
+                <a href="#version-platform" class="nav-link">平台版本要求</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="#init" class="nav-link">初始化</a>
+            <ul class="nav-list">
+              <li class="nav-item">
+                <a href="#init-bridge" class="nav-link">JSBridge 初始化</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="#scan" class="nav-link">扫码功能</a>
+            <ul class="nav-list">
+              <li class="nav-item">
+                <a href="#scan-qrcode" class="nav-link">scanQRCode</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="#location" class="nav-link">位置服务</a>
+            <ul class="nav-list">
+              <li class="nav-item">
+                <a href="#get-location" class="nav-link">getLocation</a>
+              </li>
+              <li class="nav-item">
+                <a href="#navigation-to" class="nav-link">navigationTo</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      
+      <!-- 主要内容区 -->
+      <div class="content">
+        <!-- 版本支持说明 -->
+        <div id="version" class="api-category">
+          <h2 class="category-title">版本支持</h2>
+          <div id="version-platform" class="api-section">
+            <div class="api-title">平台版本要求</div>
+            <div class="api-desc">JSBridge API 在不同平台上的最低版本要求。</div>
+            
+            <table class="param-table">
+              <tr>
+                <th>平台</th>
+                <th>最低版本要求</th>
+                <th>说明</th>
+              </tr>
+              <tr>
+                <td>iOS</td>
+                <td>1.7.0</td>
+                <td>iOS客户端1.7.0版本及以上支持</td>
+              </tr>
+              <tr>
+                <td>Android</td>
+                <td>1.7.0</td>
+                <td>Android客户端1.7.0版本及以上支持</td>
+              </tr>
+            </table>
+            
+            <div class="api-note">
+              <h3>注意事项</h3>
+              <ul>
+                <li>请确保在调用API前检查客户端版本</li>
+                <li>低于支持版本的客户端可能无法正常使用JSBridge功能</li>
+                <li>建议在调用API前先进行版本检查</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 初始化说明 -->
+        <div id="init" class="api-category">
+          <h2 class="category-title">初始化说明</h2>
+          <div id="init-bridge" class="api-section">
+            <div class="api-title">JSBridge 初始化</div>
+            <div class="api-desc">在使用任何 JSBridge API 之前，必须先进行初始化。初始化过程会建立 WebView 和原生应用之间的通信桥梁。</div>
+            
+            <h3>初始化代码</h3>
+            <pre><code><span class="keyword">function</span> <span class="function-name">connectWebViewJavascriptBridge</span>(cb) { 
+  <span class="keyword">if</span> (window.WebViewJavascriptBridge && WebViewJavascriptBridge.inited) { 
+    cb(WebViewJavascriptBridge); 
+  } <span class="keyword">else</span> { 
+    <span class="keyword">var</span> WVJBIframe = document.createElement(<span class="string">'iframe'</span>); 
+    WVJBIframe.style.display = <span class="string">'none'</span>; 
+    WVJBIframe.src = <span class="string">'woody://__bridge_loaded__'</span>; 
+    document.documentElement.appendChild(WVJBIframe); 
+    setTimeout(<span class="keyword">function</span>() { document.documentElement.removeChild(WVJBIframe) }, 0) 
+
+    document.addEventListener( 
+      <span class="string">"WebViewJavascriptBridgeReady"</span>, 
+      () => cb(WebViewJavascriptBridge), 
+      <span class="keyword">false</span> 
+    ); 
+  } 
+} 
+
+<span class="comment">// 调用示例</span>
+connectWebViewJavascriptBridge((bridge) => { 
+  bridge.init((msg, respCb) => 
+    respCb?.({ <span class="string">"Javascript Responds"</span>: <span class="string">"测试中文!"</span> }) 
+  ); 
+  <span class="comment">// registerHandler是可选的，只有需要接收原生端调用时才需要</span>
+  <span class="comment">//bridge.registerHandler("functionInJs", (data, respCb) => </span>
+  <span class="comment">//  respCb?.("Javascript Says Right back aka!") </span>
+  <span class="comment">//); </span>
+});</code></pre>
+
+            <h3>注意事项</h3>
+            <ul>
+              <li>初始化必须在页面加载完成后进行</li>
+              <li>所有的 JSBridge API 调用都必须在初始化成功后进行</li>
+              <li>初始化过程会创建一个临时的不可见 iframe 用于建立通信</li>
+              <li>初始化完成后，bridge 对象会被注入到全局作用域中</li>
+            </ul>
+          </div>
+        </div>
+        <!-- 扫码功能分类 -->
+        <div id="scan" class="api-category">
+          <h2 class="category-title">扫码功能</h2>
+          <div id="scan-qrcode" class="api-section">
+            <div class="api-title">scanQRCode</div>
+            <div class="api-desc">调起客户端扫一扫功能。</div>
+            
+            <h3>版本支持</h3>
+            <table class="param-table">
+              <tr>
+                <th>平台</th>
+                <th>最低版本要求</th>
+              </tr>
+              <tr>
+                <td>iOS</td>
+                <td>1.7.0</td>
+              </tr>
+              <tr>
+                <td>Android</td>
+                <td>1.7.0</td>
+              </tr>
+            </table>
+      
+            <h3>参数</h3>
+            <table class="param-table">
+              <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必填</th>
+                <th>说明</th>
+              </tr>
+              <tr>
+                <td>success</td>
+                <td>Function</td>
+                <td>否</td>
+                <td>接口调用成功的回调函数</td>
+              </tr>
+              <tr>
+                <td>fail</td>
+                <td>Function</td>
+                <td>否</td>
+                <td>接口调用失败的回调函数</td>
+              </tr>
+              <tr>
+                <td>complete</td>
+                <td>Function</td>
+                <td>否</td>
+                <td>接口调用结束的回调函数（调用成功、失败都会执行）</td>
+              </tr>
+            </table>
+      
+            <h3>返回结果</h3>
+            <table class="param-table">
+              <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>说明</th>
+              </tr>
+              <tr>
+                <td>success</td>
+                <td>Boolean</td>
+                <td>是否调用成功</td>
+              </tr>
+              <tr>
+                <td>result</td>
+                <td>String</td>
+                <td>当success为true时扫码结果字符串</td>
+              </tr>
+              <tr>
+                <td>errCode</td>
+                <td>String</td>
+                <td>当success为false时返回错误码</td>
+              </tr>
+              <tr>
+                <td>errMsg</td>
+                <td>String</td>
+                <td>错误信息（仅当success为false时存在）</td>
+              </tr>
+            </table>
+
+            <h3>错误码说明</h3>
+            <table class="param-table">
+              <tr>
+                <th>错误码</th>
+                <th>说明</th>
+              </tr>
+              <tr>
+                <td>10001</td>
+                <td>用户取消扫码操作</td>
+              </tr>
+              <tr>
+                <td>10002</td>
+                <td>相机权限未授权</td>
+              </tr>
+              <tr>
+                <td>10003</td>
+                <td>设备不支持相机功能</td>
+              </tr>
+              <tr>
+                <td>10004</td>
+                <td>相机调用失败</td>
+              </tr>
+              <tr>
+                <td>10000</td>
+                <td>发生未知错误</td>
+              </tr>
+            </table>
+      
+            <h3>调用方式</h3>
+    <pre><code><span class="keyword">function</span> <span class="function-name">_wdScanQRCode</span>(options) {
+        <span class="function-name">WebViewJavascriptBridge.callHandler</span>(
+            <span class="string">"scanQRCode"</span>,
+            {},
+            <span class="keyword">function</span>(response) {
+                <span class="keyword">if</span> (response.success) {
+                    options.success && options.success(response);
+                } <span class="keyword">else</span> {
+                    options.fail && options.fail(response);
+                }
+                options.complete && options.complete(response);
+            }
+        );
+    }</code></pre>
+      
+        <h3>调用示例</h3>
+        <pre><code><span class="function-name">_wdScanQRCode</span>({
+            success: <span class="keyword">function</span>(res) {
+                console.<span class="function-name">log</span>(<span class="string">'扫码成功：'</span>, res.result);
+            },
+            fail: <span class="keyword">function</span>(res) {
+                console.<span class="function-name">log</span>(<span class="string">'扫码失败：'</span>, res.errMsg);
+                console.<span class="function-name">log</span>(<span class="string">'错误码：'</span>, res.errCode);
+            },
+            complete: <span class="keyword">function</span>(res) {
+                console.<span class="function-name">log</span>(<span class="string">'扫码操作完成'</span>);
+            }
+        });</code></pre>
+      
+            <h3>示例</h3>
+            <button class="test-button" onclick="testScanQRCode()">测试扫一扫</button>
+            <div id="scanResult" class="result-area">扫码结果将显示在这里</div>
+          </div>
+        </div>
+        
+        <!-- 位置服务分类 -->
+        <div id="location" class="api-category">
+          <h2 class="category-title">位置服务</h2>
+          <div id="get-location" class="api-section">
+            <div class="api-title">getLocation</div>
+            <div class="api-desc">获取当前位置信息。</div>
+            
+            <h3>版本支持</h3>
+            <table class="param-table">
+              <tr>
+                <th>平台</th>
+                <th>最低版本要求</th>
+              </tr>
+              <tr>
+                <td>iOS</td>
+                <td>1.7.0</td>
+              </tr>
+              <tr>
+                <td>Android</td>
+                <td>1.7.0</td>
+              </tr>
+            </table>
+
+            <h3>参数</h3>
+            <table class="param-table">
+              <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必填</th>
+                <th>说明</th>
+              </tr>
+              <tr>
+                <td>success</td>
+                <td>Function</td>
+                <td>否</td>
+                <td>接口调用成功的回调函数</td>
+              </tr>
+              <tr>
+                <td>fail</td>
+                <td>Function</td>
+                <td>否</td>
+                <td>接口调用失败的回调函数</td>
+              </tr>
+              <tr>
+                <td>complete</td>
+                <td>Function</td>
+                <td>否</td>
+                <td>接口调用结束的回调函数（调用成功、失败都会执行）</td>
+              </tr>
+            </table>
+      
+            <h3>返回结果</h3>
+            <table class="param-table">
+              <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>说明</th>
+              </tr>
+              <tr>
+                <td>success</td>
+                <td>Boolean</td>
+                <td>是否调用成功</td>
+              </tr>
+              <tr>
+                <td>result</td>
+                <td>Object</td>
+                <td>当success为true时返回的位置信息对象</td>
+              </tr>
+              <tr>
+                <td style="padding-left: 20px;">latitude</td>
+                <td>Number</td>
+                <td>纬度（使用 gcj02 国测局坐标系）</td>
+              </tr>
+              <tr>
+                <td style="padding-left: 20px;">longitude</td>
+                <td>Number</td>
+                <td>经度（使用 gcj02 国测局坐标系）</td>
+              </tr>
+              <tr>
+                <td style="padding-left: 20px;">name</td>
+                <td>String</td>
+                <td>位置名</td>
+              </tr>
+              <tr>
+                <td style="padding-left: 20px;">address</td>
+                <td>String</td>
+                <td>地址的详细说明</td>
+              </tr>
+              <tr>
+                <td>errCode</td>
+                <td>String</td>
+                <td>当success为false时返回错误码</td>
+              </tr>
+              <tr>
+                <td>errMsg</td>
+                <td>String</td>
+                <td>错误信息（仅当success为false时存在）</td>
+              </tr>
+            </table>
+
+            <h3>错误码说明</h3>
+            <table class="param-table">
+              <tr>
+                <th>错误码</th>
+                <th>说明</th>
+              </tr>
+              <tr>
+                <td>20001</td>
+                <td>用户拒绝授予位置权限</td>
+              </tr>
+              <tr>
+                <td>20002</td>
+                <td>系统定位服务未开启</td>
+              </tr>
+              <tr>
+                <td>20003</td>
+                <td>获取位置信息超时</td>
+              </tr>
+              <tr>
+                <td>20004</td>
+                <td>设备不支持位置服务</td>
+              </tr>
+              <tr>
+                <td>20000</td>
+                <td>发生未知错误</td>
+              </tr>
+            </table>
+            
+            <div class="api-note">
+              <h3>注意事项</h3>
+              <ul>
+                <li>返回的经纬度采用高德坐标系（GCJ-02）</li>
+                <li>如需转换为其他坐标系（如WGS84、BD09），请自行进行坐标转换</li>
+              </ul>
+            </div>
+            <h3>调用方式</h3>
+            <pre><code><span class="keyword">function</span> <span class="function-name">_wdGetLocation</span>(options) {
+    <span class="function-name">WebViewJavascriptBridge.callHandler</span>(
+        <span class="string">"getLocation"</span>,
+        {},
+        <span class="keyword">function</span>(response) {
+            <span class="keyword">if</span> (response.success) {
+                options.success && options.success(response);
+            } <span class="keyword">else</span> {
+                options.fail && options.fail(response);
+            }
+            options.complete && options.complete(response);
+        }
+    );
+}</code></pre>
+      
+            <h3>调用示例</h3>
+            <pre><code><span class="function-name">_wdGetLocation</span>({
+    success: <span class="keyword">function</span>(res) {
+        console.<span class="function-name">log</span>(<span class="string">'获取位置成功：'</span>);
+        console.<span class="function-name">log</span>(<span class="string">'纬度：'</span>, res.latitude);
+        console.<span class="function-name">log</span>(<span class="string">'经度：'</span>, res.longitude);
+        console.<span class="function-name">log</span>(<span class="string">'位置名：'</span>, res.name || <span class="string">'未知'</span>);
+        console.<span class="function-name">log</span>(<span class="string">'详细地址：'</span>, res.address || <span class="string">'未知'</span>);
+    },
+    fail: <span class="keyword">function</span>(res) {
+        console.<span class="function-name">log</span>(<span class="string">'获取位置失败：'</span>, res.errMsg);
+    },
+    complete: <span class="keyword">function</span>(res) {
+        console.<span class="function-name">log</span>(<span class="string">'位置获取操作完成'</span>);
+    }
+});</code></pre>
+      
+            <h3>示例</h3>
+            <button class="test-button" onclick="testLocation()">获取位置</button>
+            <div id="locationResult" class="result-area">位置信息将显示在这里</div>
+          </div>
+          <!-- 导航功能 -->
+          <div id="navigation-to" class="api-section">
+            <div class="api-title">navigationTo</div>
+            <div class="api-desc">调起第三方地图应用进行导航。支持高德地图、百度地图、腾讯地图和系统自带地图应用。</div>
+            
+            <h3>版本支持</h3>
+            <table class="param-table">
+              <tr>
+                <th>平台</th>
+                <th>最低版本要求</th>
+              </tr>
+              <tr>
+                <td>iOS</td>
+                <td>1.7.0</td>
+              </tr>
+              <tr>
+                <td>Android</td>
+                <td>1.7.0</td>
+              </tr>
+            </table>
+      
+            <h3>参数</h3>
+            <table class="param-table">
+              <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必填</th>
+                <th>说明</th>
+              </tr>
+              <tr>
+                <td>startLatitude</td>
+                <td>Number</td>
+                <td>否</td>
+                <td>起点纬度，范围为-90~90，负数表示南纬。使用 gcj02 国测局坐标系</td>
+              </tr>
+              <tr>
+                <td>startLongitude</td>
+                <td>Number</td>
+                <td>否</td>
+                <td>起点经度，范围为-180~180，负数表示西经。使用 gcj02 国测局坐标系</td>
+              </tr>
+              <tr>
+                <td>startName</td>
+                <td>String</td>
+                <td>否</td>
+                <td>起点位置名称</td>
+              </tr>
+              <tr>
+                <td>latitude</td>
+                <td>Number</td>
+                <td>是</td>
+                <td>目的地纬度，范围为-90~90，负数表示南纬。使用 gcj02 国测局坐标系</td>
+              </tr>
+              <tr>
+                <td>longitude</td>
+                <td>Number</td>
+                <td>是</td>
+                <td>目的地经度，范围为-180~180，负数表示西经。使用 gcj02 国测局坐标系</td>
+              </tr>
+              <tr>
+                <td>destinationName</td>
+                <td>String</td>
+                <td>否</td>
+                <td>目的地位置名称</td>
+              </tr>
+              <tr>
+                <td>success</td>
+                <td>Function</td>
+                <td>否</td>
+                <td>接口调用成功的回调函数</td>
+              </tr>
+              <tr>
+                <td>fail</td>
+                <td>Function</td>
+                <td>否</td>
+                <td>接口调用失败的回调函数</td>
+              </tr>
+              <tr>
+                <td>complete</td>
+                <td>Function</td>
+                <td>否</td>
+                <td>接口调用结束的回调函数（调用成功、失败都会执行）</td>
+              </tr>
+            </table>
+      
+            <h3>返回结果</h3>
+            <table class="param-table">
+              <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>说明</th>
+              </tr>
+              <tr>
+                <td>success</td>
+                <td>Boolean</td>
+                <td>是否调用成功</td>
+              </tr>
+              <tr>
+                <td>errCode</td>
+                <td>String</td>
+                <td>错误码（仅当success为false时存在）</td>
+              </tr>
+              <tr>
+                <td>errMsg</td>
+                <td>String</td>
+                <td>错误信息（仅当success为false时存在）</td>
+              </tr>
+            </table>
+
+            <h3>错误码说明</h3>
+            <table class="param-table">
+              <tr>
+                <th>错误码</th>
+                <th>说明</th>
+              </tr>
+              <tr>
+                <td>21001</td>
+                <td>用户取消选择地图应用</td>
+              </tr>
+              <tr>
+                <td>21002</td>
+                <td>设备上未安装任何支持的地图应用</td>
+              </tr>
+              <tr>
+                <td>21003</td>
+                <td>导航参数无效</td>
+              </tr>
+              <tr>
+                <td>21000</td>
+                <td>发生未知错误</td>
+              </tr>
+            </table>
+      
+            <h3>调用方式</h3>
+            <pre><code><span class="keyword">function</span> <span class="function-name">_wdNavigationTo</span>(options) {
+                <span class="function-name">WebViewJavascriptBridge.callHandler</span>(
+                    <span class="string">"navigationTo"</span>,
+                    {
+                        startLatitude: options.startLatitude,
+                        startLongitude: options.startLongitude,
+                        startName: options.startName,
+                        latitude: options.latitude,
+                        longitude: options.longitude,
+                        destinationName: options.destinationName
+                    },
+                    <span class="keyword">function</span>(response) {
+                        <span class="keyword">if</span> (response.success) {
+                            options.success && options.success(response.result);
+                        } <span class="keyword">else</span> {
+                            options.fail && options.fail(response);
+                        }
+                        options.complete && options.complete(response);
+                    }
+                );
+            }</code></pre>
+              
+            <h3>调用示例</h3>
+              <pre><code><span class="function-name">_wdNavigationTo</span>({
+          // GCJ02坐标系 - 人民广场
+          startLatitude: 31.2304,
+          startLongitude: 121.4737,
+          startName: <span class="string">"人民广场"</span>,
+          // GCJ02坐标系 - 东方明珠
+          latitude: 31.2396,
+          longitude: 121.4952,
+          destinationName: <span class="string">"东方明珠"</span>,
+          success: <span class="keyword">function</span>() {
+              console.<span class="function-name">log</span>(<span class="string">'导航启动成功'</span>);
+          },
+          fail: <span class="keyword">function</span>(res) {
+              console.<span class="function-name">log</span>(<span class="string">'导航启动失败：'</span>);
+              console.<span class="function-name">log</span>(<span class="string">'错误码：'</span>, res.errCode);
+              console.<span class="function-name">log</span>(<span class="string">'错误信息：'</span>, res.errMsg);
+          },
+          complete: <span class="keyword">function</span>(res) {
+              console.<span class="function-name">log</span>(<span class="string">'导航操作完成'</span>);
+          }
+      });</code></pre>
+      
+            <h3>示例</h3>
+            <button class="test-button" onclick="testNavigation()">测试导航</button>
+            <div id="navigationResult" class="result-area">导航结果将显示在这里</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="main.js"></script>
+  </body>
+</html>
