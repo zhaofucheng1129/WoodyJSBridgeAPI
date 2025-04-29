@@ -255,7 +255,7 @@ connectWoodyAPI((bridge) => {
             {},
             <span class="keyword">function</span>(response) {
                 <span class="keyword">if</span> (response.success) {
-                    options.success && options.success(response);
+                    options.success && options.success(response.result);
                 } <span class="keyword">else</span> {
                     options.fail && options.fail(response);
                 }
@@ -267,7 +267,7 @@ connectWoodyAPI((bridge) => {
         <h3>调用示例</h3>
         <pre><code><span class="function-name">_wdScanQRCode</span>({
             success: <span class="keyword">function</span>(res) {
-                console.<span class="function-name">log</span>(<span class="string">'扫码成功：'</span>, res.result);
+                console.<span class="function-name">log</span>(<span class="string">'扫码成功：'</span>, res);
             },
             fail: <span class="keyword">function</span>(res) {
                 console.<span class="function-name">log</span>(<span class="string">'扫码失败：'</span>, res.errMsg);
@@ -426,7 +426,7 @@ connectWoodyAPI((bridge) => {
         {},
         <span class="keyword">function</span>(response) {
             <span class="keyword">if</span> (response.success) {
-                options.success && options.success(response);
+                options.success && options.success(response.result);
             } <span class="keyword">else</span> {
                 options.fail && options.fail(response);
             }
@@ -603,7 +603,7 @@ connectWoodyAPI((bridge) => {
                     },
                     <span class="keyword">function</span>(response) {
                         <span class="keyword">if</span> (response.success) {
-                            options.success && options.success(response.result);
+                            options.success && options.success();
                         } <span class="keyword">else</span> {
                             options.fail && options.fail(response);
                         }
@@ -619,8 +619,8 @@ connectWoodyAPI((bridge) => {
           startLongitude: 121.4737,
           startName: <span class="string">"人民广场"</span>,
           // GCJ02坐标系 - 东方明珠
-          latitude: 31.2396,
-          longitude: 121.4952,
+          latitude: 31.239654,
+          longitude: 121.499674,
           destinationName: <span class="string">"东方明珠"</span>,
           success: <span class="keyword">function</span>() {
               console.<span class="function-name">log</span>(<span class="string">'导航启动成功'</span>);

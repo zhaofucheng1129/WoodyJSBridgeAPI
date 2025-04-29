@@ -36,7 +36,7 @@ function _wdScanQRCode(options) {
     {},
     function (response) {
       if (response.success) {
-        options.success && options.success(response);
+        options.success && options.success(response.result);
       } else {
         options.fail && options.fail(response);
       }
@@ -51,7 +51,7 @@ function testScanQRCode() {
     success: function (res) {
       document.getElementById("scanResult").innerText = 
         "扫码成功：\n" + 
-        "结果：" + res.result;
+        "结果：" + res;
     },
     fail: function (res) {
       document.getElementById("scanResult").innerText = 
@@ -95,8 +95,8 @@ function testNavigation() {
     startLongitude: 121.4737,
     startName: "人民广场",
     // GCJ02坐标系 - 东方明珠
-    latitude: 31.2396,
-    longitude: 121.4952,
+    latitude: 31.239654,
+    longitude: 121.499674,
     destinationName: "东方明珠",
     success: function(res) {
       document.getElementById("navigationResult").innerText = 
@@ -176,7 +176,7 @@ function _wdNavigationTo(options) {
     },
     function(response) {
       if (response.success) {
-        options.success && options.success(response);
+        options.success && options.success();
       } else {
         options.fail && options.fail(response);
       }
