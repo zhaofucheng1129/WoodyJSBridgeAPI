@@ -102,9 +102,9 @@
             <div class="api-desc">在使用任何 JSBridge API 之前，必须先进行初始化。初始化过程会建立 WebView 和原生应用之间的通信桥梁。</div>
             
             <h3>初始化代码</h3>
-            <pre><code><span class="keyword">function</span> <span class="function-name">connectWoodyAPI</span>(cb) { 
-  <span class="keyword">if</span> (window.WoodyAPI && WoodyAPI.inited) { 
-    cb(WoodyAPI); 
+            <pre><code><span class="keyword">function</span> <span class="function-name">connectWoodyBridge</span>(cb) { 
+  <span class="keyword">if</span> (window.WoodyBridge && WoodyBridge.inited) { 
+    cb(WoodyBridge); 
   } <span class="keyword">else</span> { 
     <span class="keyword">var</span> WVJBIframe = document.createElement(<span class="string">'iframe'</span>); 
     WVJBIframe.style.display = <span class="string">'none'</span>; 
@@ -113,15 +113,15 @@
     setTimeout(<span class="keyword">function</span>() { document.documentElement.removeChild(WVJBIframe) }, 0) 
 
     document.addEventListener( 
-      <span class="string">"WoodyAPIReady"</span>, 
-      () => cb(WoodyAPI), 
+      <span class="string">"WoodyBridgeReady"</span>, 
+      () => cb(WoodyBridge), 
       <span class="keyword">false</span> 
     ); 
   } 
 } 
 
 <span class="comment">// 调用示例</span>
-connectWoodyAPI((bridge) => { 
+connectWoodyBridge((bridge) => { 
   bridge.init((msg, respCb) => 
     respCb?.({ <span class="string">"Javascript Responds"</span>: <span class="string">"测试中文!"</span> }) 
   ); 
@@ -250,7 +250,7 @@ connectWoodyAPI((bridge) => {
       
             <h3>调用方式</h3>
     <pre><code><span class="keyword">function</span> <span class="function-name">_wdScanQRCode</span>(options) {
-        <span class="function-name">WoodyAPI.callHandler</span>(
+        <span class="function-name">WoodyBridge.callHandler</span>(
             <span class="string">"scanQRCode"</span>,
             {},
             <span class="keyword">function</span>(response) {
@@ -421,7 +421,7 @@ connectWoodyAPI((bridge) => {
             </div>
             <h3>调用方式</h3>
             <pre><code><span class="keyword">function</span> <span class="function-name">_wdGetLocation</span>(options) {
-    <span class="function-name">WoodyAPI.callHandler</span>(
+    <span class="function-name">WoodyBridge.callHandler</span>(
         <span class="string">"getLocation"</span>,
         {},
         <span class="keyword">function</span>(response) {
@@ -591,7 +591,7 @@ connectWoodyAPI((bridge) => {
       
             <h3>调用方式</h3>
             <pre><code><span class="keyword">function</span> <span class="function-name">_wdNavigationTo</span>(options) {
-                <span class="function-name">WoodyAPI.callHandler</span>(
+                <span class="function-name">WoodyBridge.callHandler</span>(
                     <span class="string">"navigationTo"</span>,
                     {
                         startLatitude: options.startLatitude,

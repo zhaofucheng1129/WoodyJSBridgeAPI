@@ -1,7 +1,7 @@
 // 初始化JSBridge
-function connectWoodyAPI(cb) { 
-  if (window.WoodyAPI && WoodyAPI.inited) { 
-    cb(WoodyAPI); 
+function connectWoodyBridge(cb) { 
+  if (window.WoodyBridge && WoodyBridge.inited) { 
+    cb(WoodyBridge); 
   } else { 
     var WVJBIframe = document.createElement('iframe'); 
     WVJBIframe.style.display = 'none'; 
@@ -10,15 +10,15 @@ function connectWoodyAPI(cb) {
     setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0) 
 
     document.addEventListener( 
-      "WoodyAPIReady", 
-      () => cb(WoodyAPI), 
+      "WoodyBridgeReady", 
+      () => cb(WoodyBridge), 
       false 
     ); 
   } 
 } 
 
 // 连接桥接
-connectWoodyAPI((bridge) => { 
+connectWoodyBridge((bridge) => { 
   bridge.init((msg, respCb) => 
     // 可选的回调函数
     respCb?.({ "Javascript Responds": "测试中文!" }) 
@@ -31,7 +31,7 @@ connectWoodyAPI((bridge) => {
 
 // 扫码功能
 function _wdScanQRCode(options) {
-  WoodyAPI.callHandler(
+  WoodyBridge.callHandler(
     "scanQRCode",
     {},
     function (response) {
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // 获取位置功能
 function _wdGetLocation(options) {
-  WoodyAPI.callHandler(
+  WoodyBridge.callHandler(
     "getLocation",
     {},
     function(response) {
@@ -164,7 +164,7 @@ function _wdGetLocation(options) {
 
 // 导航功能
 function _wdNavigationTo(options) {
-  WoodyAPI.callHandler(
+  WoodyBridge.callHandler(
     "navigationTo",
     {
       startLatitude: options.startLatitude,
