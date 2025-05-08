@@ -4,15 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Woody JSBridge API 文档</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <!-- 添加遮罩层 -->
     <div class="overlay" onclick="toggleNav()"></div>
-    
+
     <h1>Woody JSBridge API 文档</h1>
     <button class="nav-toggle" onclick="toggleNav()">☰</button>
-    
+
     <div class="container">
       <!-- 左侧导航 -->
       <nav class="nav">
@@ -35,6 +35,22 @@
             </ul>
           </li>
           <li class="nav-item">
+            <a href="#basic" class="nav-link">App基础能力</a>
+            <ul class="nav-list">
+              <li class="nav-item">
+                <a href="#set-navigation-bar" class="nav-link"
+                  >setNavigationBar</a
+                >
+              </li>
+              <li class="nav-item">
+                <a href="#close-window" class="nav-link">closeWindow</a>
+              </li>
+              <li class="nav-item">
+                <a href="#get-system-bar-height" class="nav-link">getSystemBarHeight</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
             <a href="#scan" class="nav-link">扫码功能</a>
             <ul class="nav-list">
               <li class="nav-item">
@@ -42,6 +58,7 @@
               </li>
             </ul>
           </li>
+          
           <li class="nav-item">
             <a href="#location" class="nav-link">位置服务</a>
             <ul class="nav-list">
@@ -55,7 +72,7 @@
           </li>
         </ul>
       </nav>
-      
+
       <!-- 主要内容区 -->
       <div class="content">
         <!-- 版本支持说明 -->
@@ -63,8 +80,10 @@
           <h2 class="category-title">版本支持</h2>
           <div id="version-platform" class="api-section">
             <div class="api-title">平台版本要求</div>
-            <div class="api-desc">JSBridge API 在不同平台上的最低版本要求。</div>
-            
+            <div class="api-desc">
+              JSBridge API 在不同平台上的最低版本要求。
+            </div>
+
             <table class="param-table">
               <tr>
                 <th>平台</th>
@@ -82,7 +101,7 @@
                 <td>Android客户端1.7.0版本及以上支持</td>
               </tr>
             </table>
-            
+
             <div class="api-note">
               <h3>注意事项</h3>
               <ul>
@@ -93,14 +112,17 @@
             </div>
           </div>
         </div>
-        
+
         <!-- 初始化说明 -->
         <div id="init" class="api-category">
           <h2 class="category-title">初始化说明</h2>
           <div id="init-bridge" class="api-section">
             <div class="api-title">JSBridge 初始化</div>
-            <div class="api-desc">在使用任何 JSBridge API 之前，必须先进行初始化。初始化过程会建立 WebView 和原生应用之间的通信桥梁。</div>
-            
+            <div class="api-desc">
+              在使用任何 JSBridge API 之前，必须先进行初始化。初始化过程会建立
+              WebView 和原生应用之间的通信桥梁。
+            </div>
+
             <h3>初始化代码</h3>
             <pre><code><span class="keyword">function</span> <span class="function-name">connectWoodyBridge</span>(cb) { 
   <span class="keyword">if</span> (window.WoodyBridge && WoodyBridge.inited) { 
@@ -140,13 +162,16 @@ connectWoodyBridge((bridge) => {
             </ul>
           </div>
         </div>
-        <!-- 扫码功能分类 -->
-        <div id="scan" class="api-category">
-          <h2 class="category-title">扫码功能</h2>
-          <div id="scan-qrcode" class="api-section">
-            <div class="api-title">scanQRCode</div>
-            <div class="api-desc">调起客户端扫一扫功能。</div>
-            
+
+        <!-- App基础能力支持 -->
+        <div id="basic" class="api-category">
+          <h2 class="category-title">App基础能力支持</h2>
+
+          <!-- setNavigationBar -->
+          <div id="set-navigation-bar" class="api-section">
+            <div class="api-title">setNavigationBar</div>
+            <div class="api-desc">设置导航栏的显示或隐藏状态。</div>
+
             <h3>版本支持</h3>
             <table class="param-table">
               <tr>
@@ -162,7 +187,144 @@ connectWoodyBridge((bridge) => {
                 <td>1.7.0</td>
               </tr>
             </table>
-      
+
+            <h3>参数</h3>
+            <table class="param-table">
+              <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必填</th>
+                <th>说明</th>
+              </tr>
+              <tr>
+                <td>hidden</td>
+                <td>Boolean</td>
+                <td>是</td>
+                <td>是否隐藏导航栏，true表示隐藏，false表示显示</td>
+              </tr>
+              <tr>
+                <td>success</td>
+                <td>Function</td>
+                <td>否</td>
+                <td>接口调用成功的回调函数</td>
+              </tr>
+              <tr>
+                <td>fail</td>
+                <td>Function</td>
+                <td>否</td>
+                <td>接口调用失败的回调函数</td>
+              </tr>
+              <tr>
+                <td>complete</td>
+                <td>Function</td>
+                <td>否</td>
+                <td>接口调用结束的回调函数（调用成功、失败都会执行）</td>
+              </tr>
+            </table>
+
+            <h3>返回结果</h3>
+            <table class="param-table">
+              <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>说明</th>
+              </tr>
+              <tr>
+                <td>success</td>
+                <td>Boolean</td>
+                <td>是否调用成功</td>
+              </tr>
+              <tr>
+                <td>errCode</td>
+                <td>String</td>
+                <td>当success为false时返回错误码</td>
+              </tr>
+              <tr>
+                <td>errMsg</td>
+                <td>String</td>
+                <td>错误信息（仅当success为false时存在）</td>
+              </tr>
+            </table>
+
+            <h3>错误码说明</h3>
+            <table class="param-table">
+              <tr>
+                <th>错误码</th>
+                <th>说明</th>
+              </tr>
+              <tr>
+                <td>10001</td>
+                <td>参数错误</td>
+              </tr>
+              <tr>
+                <td>10000</td>
+                <td>发生未知错误</td>
+              </tr>
+            </table>
+
+            <h3>调用方式</h3>
+            <pre><code><span class="keyword">function</span> <span class="function-name">_wdSetNavigationBar</span>(options) {
+    <span class="function-name">WoodyBridge.callHandler</span>(
+        <span class="string">"setNavigationBar"</span>,
+        {
+            hidden: options.hidden
+        },
+        <span class="keyword">function</span>(response) {
+            <span class="keyword">if</span> (response.success) {
+                options.success && options.success();
+            } <span class="keyword">else</span> {
+                options.fail && options.fail(response);
+            }
+            options.complete && options.complete(response);
+        }
+    );
+}</code></pre>
+
+            <h3>调用示例</h3>
+            <pre><code><span class="function-name">_wdSetNavigationBar</span>({
+    hidden: true,
+    success: <span class="keyword">function</span>() {
+        console.<span class="function-name">log</span>(<span class="string">'导航栏已隐藏'</span>);
+    },
+    fail: <span class="keyword">function</span>(res) {
+        console.<span class="function-name">log</span>(<span class="string">'设置导航栏失败：'</span>);
+        console.<span class="function-name">log</span>(<span class="string">'错误信息：'</span>, res.errMsg);
+    },
+    complete: <span class="keyword">function</span>(res) {
+        console.<span class="function-name">log</span>(<span class="string">'导航栏设置操作完成'</span>);
+    }
+});</code></pre>
+
+            <h3>示例</h3>
+            <button class="test-button" onclick="testSetNavigationBar()">
+              隐藏导航栏
+            </button>
+            <div id="navigationBarResult" class="result-area">
+              导航栏操作结果将显示在这里
+            </div>
+          </div>
+
+          <!-- closeWindow -->
+          <div id="close-window" class="api-section">
+            <div class="api-title">closeWindow</div>
+            <div class="api-desc">关闭当前网页窗口。</div>
+
+            <h3>版本支持</h3>
+            <table class="param-table">
+              <tr>
+                <th>平台</th>
+                <th>最低版本要求</th>
+              </tr>
+              <tr>
+                <td>iOS</td>
+                <td>1.7.0</td>
+              </tr>
+              <tr>
+                <td>Android</td>
+                <td>1.7.0</td>
+              </tr>
+            </table>
+
             <h3>参数</h3>
             <table class="param-table">
               <tr>
@@ -190,7 +352,262 @@ connectWoodyBridge((bridge) => {
                 <td>接口调用结束的回调函数（调用成功、失败都会执行）</td>
               </tr>
             </table>
-      
+
+            <h3>返回结果</h3>
+            <table class="param-table">
+              <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>说明</th>
+              </tr>
+              <tr>
+                <td>success</td>
+                <td>Boolean</td>
+                <td>是否调用成功</td>
+              </tr>
+              <tr>
+                <td>errCode</td>
+                <td>String</td>
+                <td>当success为false时返回错误码</td>
+              </tr>
+              <tr>
+                <td>errMsg</td>
+                <td>String</td>
+                <td>错误信息（仅当success为false时存在）</td>
+              </tr>
+            </table>
+
+            <h3>错误码说明</h3>
+            <table class="param-table">
+              <tr>
+                <th>错误码</th>
+                <th>说明</th>
+              </tr>
+              <tr>
+                <td>10000</td>
+                <td>发生未知错误</td>
+              </tr>
+            </table>
+
+            <h3>调用方式</h3>
+            <pre><code><span class="keyword">function</span> <span class="function-name">_wdCloseWindow</span>(options) {
+    <span class="function-name">WoodyBridge.callHandler</span>(
+        <span class="string">"closeWindow"</span>,
+        {},
+        <span class="keyword">function</span>(response) {
+            <span class="keyword">if</span> (response.success) {
+                options.success && options.success();
+            } <span class="keyword">else</span> {
+                options.fail && options.fail(response);
+            }
+            options.complete && options.complete(response);
+        }
+    );
+}</code></pre>
+
+            <h3>调用示例</h3>
+            <pre><code><span class="function-name">_wdCloseWindow</span>({
+    success: <span class="keyword">function</span>() {
+        console.<span class="function-name">log</span>(<span class="string">'窗口关闭成功'</span>);
+    },
+    fail: <span class="keyword">function</span>(res) {
+        console.<span class="function-name">log</span>(<span class="string">'窗口关闭失败：'</span>);
+        console.<span class="function-name">log</span>(<span class="string">'错误信息：'</span>, res.errMsg);
+    },
+    complete: <span class="keyword">function</span>(res) {
+        console.<span class="function-name">log</span>(<span class="string">'窗口关闭操作完成'</span>);
+    }
+});</code></pre>
+
+            <h3>示例</h3>
+            <button class="test-button" onclick="testCloseWindow()">
+              关闭窗口
+            </button>
+            <div id="closeWindowResult" class="result-area">
+              窗口关闭操作结果将显示在这里
+            </div>
+          </div>
+          
+           <!-- getSystemBarHeight -->
+           <div id="get-system-bar-height" class="api-section">
+            <div class="api-title">getSystemBarHeight</div>
+            <div class="api-desc">获取系统状态栏和底部导航条的高度信息。</div>
+
+            <h3>版本支持</h3>
+            <table class="param-table">
+              <tr>
+                <th>平台</th>
+                <th>最低版本要求</th>
+              </tr>
+              <tr>
+                <td>iOS</td>
+                <td>1.7.0</td>
+              </tr>
+              <tr>
+                <td>Android</td>
+                <td>1.7.0</td>
+              </tr>
+            </table>
+
+            <h3>参数</h3>
+            <table class="param-table">
+              <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必填</th>
+                <th>说明</th>
+              </tr>
+              <tr>
+                <td>success</td>
+                <td>Function</td>
+                <td>否</td>
+                <td>接口调用成功的回调函数</td>
+              </tr>
+              <tr>
+                <td>fail</td>
+                <td>Function</td>
+                <td>否</td>
+                <td>接口调用失败的回调函数</td>
+              </tr>
+              <tr>
+                <td>complete</td>
+                <td>Function</td>
+                <td>否</td>
+                <td>接口调用结束的回调函数（调用成功、失败都会执行）</td>
+              </tr>
+            </table>
+
+            <h3>返回结果</h3>
+            <table class="param-table">
+              <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>说明</th>
+              </tr>
+              <tr>
+                <td>success</td>
+                <td>Boolean</td>
+                <td>是否调用成功</td>
+              </tr>
+              <tr>
+                <td>result</td>
+                <td>Object</td>
+                <td>当success为true时返回的结果对象</td>
+              </tr>
+              <tr>
+                <td style="padding-left: 20px">statusBarHeight</td>
+                <td>Number</td>
+                <td>状态栏高度，单位为像素(px)</td>
+              </tr>
+              <tr>
+                <td style="padding-left: 20px">systemNavBarHeight</td>
+                <td>Number</td>
+                <td>底部系统导航条高度，单位为像素(px)</td>
+              </tr>
+              <tr>
+                <td>errCode</td>
+                <td>String</td>
+                <td>当success为false时返回错误码</td>
+              </tr>
+              <tr>
+                <td>errMsg</td>
+                <td>String</td>
+                <td>错误信息（仅当success为false时存在）</td>
+              </tr>
+            </table>
+
+            <h3>调用方式</h3>
+            <pre><code><span class="keyword">function</span> <span class="function-name">_wdGetSystemBarHeight</span>(options) {
+    <span class="function-name">WoodyBridge.callHandler</span>(
+        <span class="string">"getSystemBarHeight"</span>,
+        {},
+        <span class="keyword">function</span>(response) {
+            <span class="keyword">if</span> (response.success) {
+                options.success && options.success(response.result);
+            } <span class="keyword">else</span> {
+                options.fail && options.fail(response);
+            }
+            options.complete && options.complete(response);
+        }
+    );
+}</code></pre>
+
+            <h3>调用示例</h3>
+            <pre><code><span class="function-name">_wdGetSystemBarHeight</span>({
+    success: <span class="keyword">function</span>(res) {
+        console.<span class="function-name">log</span>(<span class="string">'状态栏高度：'</span>, res.statusBarHeight);
+        console.<span class="function-name">log</span>(<span class="string">'底部导航条高度：'</span>, res.systemNavBarHeight);
+    },
+    fail: <span class="keyword">function</span>(res) {
+        console.<span class="function-name">log</span>(<span class="string">'获取高度失败：'</span>);
+        console.<span class="function-name">log</span>(<span class="string">'错误信息：'</span>, res.errMsg);
+    },
+    complete: <span class="keyword">function</span>(res) {
+        console.<span class="function-name">log</span>(<span class="string">'获取高度操作完成'</span>);
+    }
+});</code></pre>
+
+            <h3>示例</h3>
+            <button class="test-button" onclick="testGetSystemBarHeight()">
+              获取系统状态栏和底部导航条高度
+            </button>
+            <div id="barHeightResult" class="result-area">
+              高度信息将显示在这里
+            </div>
+          </div>
+        </div>
+
+        <!-- 扫码功能分类 -->
+        <div id="scan" class="api-category">
+          <h2 class="category-title">扫码功能</h2>
+          <div id="scan-qrcode" class="api-section">
+            <div class="api-title">scanQRCode</div>
+            <div class="api-desc">调起客户端扫一扫功能。</div>
+
+            <h3>版本支持</h3>
+            <table class="param-table">
+              <tr>
+                <th>平台</th>
+                <th>最低版本要求</th>
+              </tr>
+              <tr>
+                <td>iOS</td>
+                <td>1.7.0</td>
+              </tr>
+              <tr>
+                <td>Android</td>
+                <td>1.7.0</td>
+              </tr>
+            </table>
+
+            <h3>参数</h3>
+            <table class="param-table">
+              <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必填</th>
+                <th>说明</th>
+              </tr>
+              <tr>
+                <td>success</td>
+                <td>Function</td>
+                <td>否</td>
+                <td>接口调用成功的回调函数</td>
+              </tr>
+              <tr>
+                <td>fail</td>
+                <td>Function</td>
+                <td>否</td>
+                <td>接口调用失败的回调函数</td>
+              </tr>
+              <tr>
+                <td>complete</td>
+                <td>Function</td>
+                <td>否</td>
+                <td>接口调用结束的回调函数（调用成功、失败都会执行）</td>
+              </tr>
+            </table>
+
             <h3>返回结果</h3>
             <table class="param-table">
               <tr>
@@ -247,9 +664,9 @@ connectWoodyBridge((bridge) => {
                 <td>发生未知错误</td>
               </tr>
             </table>
-      
+
             <h3>调用方式</h3>
-    <pre><code><span class="keyword">function</span> <span class="function-name">_wdScanQRCode</span>(options) {
+            <pre><code><span class="keyword">function</span> <span class="function-name">_wdScanQRCode</span>(options) {
         <span class="function-name">WoodyBridge.callHandler</span>(
             <span class="string">"scanQRCode"</span>,
             {},
@@ -263,9 +680,9 @@ connectWoodyBridge((bridge) => {
             }
         );
     }</code></pre>
-      
-        <h3>调用示例</h3>
-        <pre><code><span class="function-name">_wdScanQRCode</span>({
+
+            <h3>调用示例</h3>
+            <pre><code><span class="function-name">_wdScanQRCode</span>({
             success: <span class="keyword">function</span>(res) {
                 console.<span class="function-name">log</span>(<span class="string">'扫码成功：'</span>, res);
             },
@@ -277,20 +694,22 @@ connectWoodyBridge((bridge) => {
                 console.<span class="function-name">log</span>(<span class="string">'扫码操作完成'</span>);
             }
         });</code></pre>
-      
+
             <h3>示例</h3>
-            <button class="test-button" onclick="testScanQRCode()">测试扫一扫</button>
+            <button class="test-button" onclick="testScanQRCode()">
+              测试扫一扫
+            </button>
             <div id="scanResult" class="result-area">扫码结果将显示在这里</div>
           </div>
         </div>
-        
+
         <!-- 位置服务分类 -->
         <div id="location" class="api-category">
           <h2 class="category-title">位置服务</h2>
           <div id="get-location" class="api-section">
             <div class="api-title">getLocation</div>
             <div class="api-desc">获取当前位置信息。</div>
-            
+
             <h3>版本支持</h3>
             <table class="param-table">
               <tr>
@@ -334,7 +753,7 @@ connectWoodyBridge((bridge) => {
                 <td>接口调用结束的回调函数（调用成功、失败都会执行）</td>
               </tr>
             </table>
-      
+
             <h3>返回结果</h3>
             <table class="param-table">
               <tr>
@@ -353,22 +772,22 @@ connectWoodyBridge((bridge) => {
                 <td>当success为true时返回的位置信息对象</td>
               </tr>
               <tr>
-                <td style="padding-left: 20px;">latitude</td>
+                <td style="padding-left: 20px">latitude</td>
                 <td>Number</td>
                 <td>纬度（使用 gcj02 国测局坐标系）</td>
               </tr>
               <tr>
-                <td style="padding-left: 20px;">longitude</td>
+                <td style="padding-left: 20px">longitude</td>
                 <td>Number</td>
                 <td>经度（使用 gcj02 国测局坐标系）</td>
               </tr>
               <tr>
-                <td style="padding-left: 20px;">name</td>
+                <td style="padding-left: 20px">name</td>
                 <td>String</td>
                 <td>位置名</td>
               </tr>
               <tr>
-                <td style="padding-left: 20px;">address</td>
+                <td style="padding-left: 20px">address</td>
                 <td>String</td>
                 <td>地址的详细说明</td>
               </tr>
@@ -411,12 +830,14 @@ connectWoodyBridge((bridge) => {
                 <td>发生未知错误</td>
               </tr>
             </table>
-            
+
             <div class="api-note">
               <h3>注意事项</h3>
               <ul>
                 <li>返回的经纬度采用高德坐标系（GCJ-02）</li>
-                <li>如需转换为其他坐标系（如WGS84、BD09），请自行进行坐标转换</li>
+                <li>
+                  如需转换为其他坐标系（如WGS84、BD09），请自行进行坐标转换
+                </li>
               </ul>
             </div>
             <h3>调用方式</h3>
@@ -434,7 +855,7 @@ connectWoodyBridge((bridge) => {
         }
     );
 }</code></pre>
-      
+
             <h3>调用示例</h3>
             <pre><code><span class="function-name">_wdGetLocation</span>({
     success: <span class="keyword">function</span>(res) {
@@ -451,16 +872,22 @@ connectWoodyBridge((bridge) => {
         console.<span class="function-name">log</span>(<span class="string">'位置获取操作完成'</span>);
     }
 });</code></pre>
-      
+
             <h3>示例</h3>
-            <button class="test-button" onclick="testLocation()">获取位置</button>
-            <div id="locationResult" class="result-area">位置信息将显示在这里</div>
+            <button class="test-button" onclick="testLocation()">
+              获取位置
+            </button>
+            <div id="locationResult" class="result-area">
+              位置信息将显示在这里
+            </div>
           </div>
           <!-- 导航功能 -->
           <div id="navigation-to" class="api-section">
             <div class="api-title">navigationTo</div>
-            <div class="api-desc">调起第三方地图应用进行导航。支持高德地图、百度地图、腾讯地图和系统自带地图应用（系统自带地图应用仅限iOS系统，Android不支持系统自带地图应用）。</div>
-            
+            <div class="api-desc">
+              调起第三方地图应用进行导航。支持高德地图、百度地图、腾讯地图和系统自带地图应用（系统自带地图应用仅限iOS系统，Android不支持系统自带地图应用）。
+            </div>
+
             <h3>版本支持</h3>
             <table class="param-table">
               <tr>
@@ -476,7 +903,7 @@ connectWoodyBridge((bridge) => {
                 <td>1.7.0</td>
               </tr>
             </table>
-      
+
             <h3>参数</h3>
             <table class="param-table">
               <tr>
@@ -489,13 +916,18 @@ connectWoodyBridge((bridge) => {
                 <td>startLatitude</td>
                 <td>Number</td>
                 <td>否</td>
-                <td>起点纬度，范围为-90~90，负数表示南纬。使用 gcj02 国测局坐标系</td>
+                <td>
+                  起点纬度，范围为-90~90，负数表示南纬。使用 gcj02 国测局坐标系
+                </td>
               </tr>
               <tr>
                 <td>startLongitude</td>
                 <td>Number</td>
                 <td>否</td>
-                <td>起点经度，范围为-180~180，负数表示西经。使用 gcj02 国测局坐标系</td>
+                <td>
+                  起点经度，范围为-180~180，负数表示西经。使用 gcj02
+                  国测局坐标系
+                </td>
               </tr>
               <tr>
                 <td>startName</td>
@@ -507,13 +939,19 @@ connectWoodyBridge((bridge) => {
                 <td>latitude</td>
                 <td>Number</td>
                 <td>是</td>
-                <td>目的地纬度，范围为-90~90，负数表示南纬。使用 gcj02 国测局坐标系</td>
+                <td>
+                  目的地纬度，范围为-90~90，负数表示南纬。使用 gcj02
+                  国测局坐标系
+                </td>
               </tr>
               <tr>
                 <td>longitude</td>
                 <td>Number</td>
                 <td>是</td>
-                <td>目的地经度，范围为-180~180，负数表示西经。使用 gcj02 国测局坐标系</td>
+                <td>
+                  目的地经度，范围为-180~180，负数表示西经。使用 gcj02
+                  国测局坐标系
+                </td>
               </tr>
               <tr>
                 <td>destinationName</td>
@@ -540,7 +978,7 @@ connectWoodyBridge((bridge) => {
                 <td>接口调用结束的回调函数（调用成功、失败都会执行）</td>
               </tr>
             </table>
-      
+
             <h3>返回结果</h3>
             <table class="param-table">
               <tr>
@@ -588,7 +1026,7 @@ connectWoodyBridge((bridge) => {
                 <td>发生未知错误</td>
               </tr>
             </table>
-      
+
             <h3>调用方式</h3>
             <pre><code><span class="keyword">function</span> <span class="function-name">_wdNavigationTo</span>(options) {
                 <span class="function-name">WoodyBridge.callHandler</span>(
@@ -611,9 +1049,9 @@ connectWoodyBridge((bridge) => {
                     }
                 );
             }</code></pre>
-              
+
             <h3>调用示例</h3>
-              <pre><code><span class="function-name">_wdNavigationTo</span>({
+            <pre><code><span class="function-name">_wdNavigationTo</span>({
           // GCJ02坐标系 - 人民广场
           startLatitude: 31.2304,
           startLongitude: 121.4737,
@@ -634,10 +1072,14 @@ connectWoodyBridge((bridge) => {
               console.<span class="function-name">log</span>(<span class="string">'导航操作完成'</span>);
           }
       });</code></pre>
-      
+
             <h3>示例</h3>
-            <button class="test-button" onclick="testNavigation()">测试导航</button>
-            <div id="navigationResult" class="result-area">导航结果将显示在这里</div>
+            <button class="test-button" onclick="testNavigation()">
+              测试导航
+            </button>
+            <div id="navigationResult" class="result-area">
+              导航结果将显示在这里
+            </div>
           </div>
         </div>
       </div>

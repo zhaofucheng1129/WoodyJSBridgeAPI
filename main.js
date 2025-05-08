@@ -184,3 +184,113 @@ function _wdNavigationTo(options) {
     }
   );
 }
+
+// 设置导航栏功能
+function _wdSetNavigationBar(options) {
+  WoodyBridge.callHandler(
+    "setNavigationBar",
+    {
+      hidden: options.hidden
+    },
+    function(response) {
+      if (response.success) {
+        options.success && options.success();
+      } else {
+        options.fail && options.fail(response);
+      }
+      options.complete && options.complete(response);
+    }
+  );
+}
+
+let isHidden = false;
+// 测试设置导航栏
+function testSetNavigationBar() {
+  isHidden = !isHidden
+  _wdSetNavigationBar({
+    hidden: isHidden,
+    success: function() {
+      document.getElementById("navigationBarResult").innerText = 
+        isHidden ? "导航栏已隐藏" : "导航栏已显示"
+    },
+    fail: function(res) {
+      document.getElementById("navigationBarResult").innerText = 
+        "设置导航栏失败：\n" +
+        "错误信息：" + res.errMsg;
+    },
+    complete: function(res) {
+      console.log("导航栏设置操作完成", res);
+    }
+  });
+}
+
+// 关闭窗口功能
+function _wdCloseWindow(options) {
+  WoodyBridge.callHandler(
+    "closeWindow",
+    {},
+    function(response) {
+      if (response.success) {
+        options.success && options.success();
+      } else {
+        options.fail && options.fail(response);
+      }
+      options.complete && options.complete(response);
+    }
+  );
+}
+
+// 测试关闭窗口
+function testCloseWindow() {
+  _wdCloseWindow({
+    success: function() {
+      document.getElementById("closeWindowResult").innerText = 
+        "窗口关闭成功";
+    },
+    fail: function(res) {
+      document.getElementById("closeWindowResult").innerText = 
+        "窗口关闭失败：\n" +
+        "错误信息：" + res.errMsg;
+    },
+    complete: function(res) {
+      document.getElementById("closeWindowResult").innerText += "\n操作完成";
+      console.log("窗口关闭操作完成", res);
+    }
+  });
+}
+
+// 获取系统状态栏和底部导航条高度功能
+function _wdGetSystemBarHeight(options) {
+  WoodyBridge.callHandler(
+    "getSystemBarHeight",
+    {},
+    function(response) {
+      if (response.success) {
+        options.success && options.success(response.result);
+      } else {
+        options.fail && options.fail(response);
+      }
+      options.complete && options.complete(response);
+    }
+  );
+}
+
+// 测试获取系统状态栏和底部导航条高度
+function testGetSystemBarHeight() {
+  _wdGetSystemBarHeight({
+    success: function(res) {
+      document.getElementById("barHeightResult").innerText = 
+        "系统状态栏和底部导航条高度信息：\n" +
+        "状态栏高度：" + res.statusBarHeight + "px\n" +
+        "底部导航条高度：" + res.systemNavBarHeight + "px";
+    },
+    fail: function(res) {
+      document.getElementById("barHeightResult").innerText = 
+        "获取高度失败：\n" +
+        "错误信息：" + res.errMsg;
+    },
+    complete: function(res) {
+      console.log("获取高度操作完成", res);
+    }
+  });
+}
